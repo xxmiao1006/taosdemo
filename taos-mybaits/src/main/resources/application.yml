@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    taos:
+      driver-class-name: com.taosdata.jdbc.TSDBDriver
+      url: jdbc:TAOS://node1:6030/test?timezone=UTC-8&charset=UTF-8&locale=en_US.UTF-8
+      username: root
+      password: taosdata
+    sqlserver:
+      driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+      url: jdbc:sqlserver://192.168.1.22;instanceName=EFOS_TEST_HIS_DB;DatabaseName=efosbasic
+      username: sa
+      password: Hietech123
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 5
+      max-wait: 30000
+      validation-query: select server_status();
+#mybatis:
+#  mapper-locations: classpath:mapper/*.xml
+
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    com:
+      xuemiao:
+        taosmybaits:
+          sqlserver:
+            dao: trace

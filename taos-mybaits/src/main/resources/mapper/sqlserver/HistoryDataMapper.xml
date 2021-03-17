@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xuemiao.taosmybaits.sqlserver.dao.HistoryDataMapper">
+
+    <resultMap id="BaseResultMap" type="com.xuemiao.taosmybaits.sqlserver.domain.HistoryData">
+        <id column="TimeStamp" jdbcType="BIGINT" property="ts"/>
+        <result column="DeviceId" jdbcType="INTEGER" property="deviceId"/>
+        <result column="JSON" jdbcType="VARCHAR" property="json"/>
+        <result column="IsOfflineData" jdbcType="BIT" property="isOfflineData"/>
+    </resultMap>
+
+    <select id="getData" resultMap="BaseResultMap" >
+        select TimeStamp,DeviceId,IsOfflineData,Json
+        from efoscollectdata${projectId}.dbo.DeviceParameter_copy2
+        ORDER BY DeviceParameter_copy2.[TimeStamp] DESC
+        OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
+    </select>
+
+</mapper>

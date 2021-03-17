@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xuemiao.taosmybaits.taos.dao.StackMapper">
+
+    <resultMap id="BaseResultMap" type="com.xuemiao.taosmybaits.taos.domain.Stack">
+        <id column="ts" jdbcType="TIMESTAMP" property="ts"/>
+        <result column="s1" jdbcType="FLOAT" property="s1"/>
+        <result column="s2" jdbcType="FLOAT" property="s2"/>
+        <result column="s3" jdbcType="FLOAT" property="s3"/>
+        <result column="areaid" jdbcType="FLOAT" property="areaid"/>
+        <result column="projectid" jdbcType="FLOAT" property="projectid"/>
+        <result column="cityid" jdbcType="FLOAT" property="cityid"/>
+        <result column="address" jdbcType="BINARY" property="address"/>
+    </resultMap>
+
+    <update id="dropDB">
+        drop database if exists test
+    </update>
+
+    <update id="createDB">
+        create database if not exists test
+    </update>
+
+    <update id="createSuperTable">
+        create stable stacks (ts timestamp,s1 int,s2 int,s3 int) tags (areaid int,projectid int,address binary(20),cityid int)
+    </update>
+
+    <update id="createTable" parameterType="com.xuemiao.taosmybaits.taos.domain.Stack">
+        create table if not exists db.stack#{id} using db.stacks tags(#{areaid}, #{projectid},#{address},#{cityid})
+    </update>
+
+    <select id="select" resultMap="BaseResultMap">
+        select * from db.stacks order by ts desc
+        <if test="limit != null">
+            limit #{limit,jdbcType=BIGINT}
+        </if>
+        <if test="offset != null">
+            offset #{offset,jdbcType=BIGINT}
+        </if>
+    </select>
+
+    <insert id="insert" parameterType="com.xuemiao.taosmybaits.taos.domain.Stack">
+        insert into db.stack#{id} (s1, s2, s3) values (#{s1}, ${s2}, ${s3})
+    </insert>
+
+    <select id="getSubTables" resultType="String">
+        select tbname from db.stacks
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from db.stacks
+    </select>
+
+    <resultMap id="avgResultSet" type="com.xuemiao.taosmybaits.taos.domain.Stack">
+        <id column="ts" jdbcType="TIMESTAMP" property="ts" />
+        <result column="avg(s1)" jdbcType="FLOAT" property="s1" />
+        <result column="avg(s2)" jdbcType="FLOAT" property="s2" />
+    </resultMap>
+
+    <select id="avg" resultMap="avgResultSet">
+        select avg(s1), avg(s2)from db.stacks interval(1m)
+    </select>
+
+</mapper>
